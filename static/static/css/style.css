@@ -1,0 +1,11 @@
+body{
+	background: white url("../img/circuit.png");
+}
+.navbar{
+	border-radius: 0px;
+
+}
+.navbar-brand{
+	font-family: 'Satisfy',cursive;
+}
+/*Montserrat*/

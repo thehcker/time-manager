@@ -1,0 +1,1 @@
+web: gunicorn softsearchProj.wsgi --log-file -
