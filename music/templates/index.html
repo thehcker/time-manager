@@ -37,7 +37,7 @@
                             <a href="{% url 'favorite_album' album.id %}" class="btn btn-default btn-sm btn-favorite" role="button">
                                 <span class="glyphicon glyphicon-star {% if album.is_favorite %}active{% endif %}"></span>
                             </a>
-                            <span>Seen: {{ album.timestamp | timesince }} ago</span>
+                            <span>Added on: {{ album.timestamp }} {{ album.timestamp | timesince }} ago</span>
                         </div>
                     </div>
                 </div>

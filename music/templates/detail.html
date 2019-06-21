@@ -19,7 +19,7 @@
                     </a>
                     <h1>{{ album.album_title }} <small>{{ album.genre }}</small></h1>
                     <h2>{{ album.artist }}</h2>
-                    <span>Seen: {{ album.timestamp | timesince }} ago</span>
+                    <span>Added on : {{ album.timestamp }} {{ album.timestamp | timesince }} ago</span>
                 </div>
             </div>
         </div>
