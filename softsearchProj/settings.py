@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'music',
     'accounts',
+    'Admin',
+    'userManager',
     'widget_tweaks',
 ]
 

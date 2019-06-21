@@ -23,7 +23,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('music.urls')),
     path('accounts/', include('accounts.urls')),
-]
+    path('user_manager/', include(('userManager.urls', 'user_manager'), namespace='user_manager')),
+    path('admin/', include(('Admin.urls', 'admin'), namespace='admin')),
+
+   ]
 
 if settings.DEBUG:
 	urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
