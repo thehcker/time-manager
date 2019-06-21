@@ -3,7 +3,7 @@ import os
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
 
 
 def get_filename_ext(filepath):
@@ -48,7 +48,7 @@ class Song(models.Model):
 	def __str__(self):
 		return self.song_title
 
-def post_save_album_receiver(sender,instance,*args,**kwargs):
-	album,new = Album.objects.get_or_create(user=instance)
+# def pre_save_album_receiver(sender,instance,*args,**kwargs):
+# 	album,new = Album.objects.get_or_create(user=instance)
 
-post_save.connect(post_save_album_receiver, sender=Album)
+# pre_save.connect(pre_save_album_receiver, sender=Album)
