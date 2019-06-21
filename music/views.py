@@ -80,6 +80,23 @@ class AlbumUpdate(UpdateView):
 	template_name = 'album_form.html'
 	success_url = reverse_lazy('index')
 
+# def album_update(request):
+#     album_id = request.POST.get('album_id')
+#     if album_id is not None:
+#         try:
+#             album_obj = Album.objects.get(id=album_id)
+#         except Album.DoesNotExist:
+#             return redirect("index")
+#         album_obj, new_obj = Album.objects.new_or_get(request)
+#         if album_obj in album_obj.album.all():
+#             album_obj.model.remove(album_obj)
+#         else:
+#             album_obj.model.add(album_obj)  # cart_obj.products.add(product_id)
+#         request.session['album_items'] = album_obj.model.count()   
+# #cart_obj.products.add(product_obj)
+# #return redirect(product_obj.get_absolute_url())
+#         return redirect("index")
+
 class SongUpdate(UpdateView):
     model = Song
     fields = '__all__'
