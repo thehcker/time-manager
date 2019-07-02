@@ -1,10 +1,11 @@
 import random
 import os
 from django.conf import settings
-from django.contrib.auth.models import User
+# from accounts.models import User
 from django.db import models
 from django.urls import reverse
 from django.db.models.signals import pre_save, post_save
+
 
 User = settings.AUTH_USER_MODEL
 
@@ -43,10 +44,13 @@ class Album(models.Model):
 
 class Song(models.Model):
 	album = models.ForeignKey(Album, on_delete=models.CASCADE)
-	audio_file = models.FileField(default='')
+	audio_file = models.CharField(max_length=100)
 	song_title = models.CharField(max_length=100)
 	is_favorite = models.BooleanField(default=False)
 	timestamp = models.DateTimeField(auto_now_add=True)
+
+	def get_absolute_url(self):
+		return reverse('music:create_song', kwargs={'pk':self.pk})
 
 	def __str__(self):
 		return self.song_title
@@ -54,4 +58,41 @@ class Song(models.Model):
 # def pre_save_album_receiver(sender,instance,*args,**kwargs):
 # 	album,new = Album.objects.get_or_create(user=instance)
 
-# pre_save.connect(pre_save_album_receiver, sender=Album)
+# pre_save.connect(pre_save_album_receiver, sender=User)
+
+
+class ProfileManager(models.Manager):
+	def new_or_get(self,request):
+		profile_id = request.session.get("profile_id",None)
+		qs = self.get_queryset().filter(id=profile_id)
+		if qs.count() == 1:
+			new_obj = False
+			profile_obj = qs.first()
+			if request.user.is_authenticated and profile_obj.user is None:
+				profile_obj.user = request.user
+				profile_obj.save()
+		else:
+			profile_obj = request.user
+			
+		return profile_obj
+
+
+class Profile(models.Model):
+	user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True,related_name="profile")
+	name = models.CharField(max_length=100,blank=True)
+	address = models.CharField(max_length=150, blank=True)
+	city = models.CharField(max_length=120,default='')
+	phone = models.IntegerField(default=0)
+	last_seen = models.DateTimeField(auto_now_add=True)
+	description = models.TextField(max_length=150, blank=True, default="Enter your Products description")
+	image = models.ImageField(upload_to='documents/',null=True)
+
+	objects = ProfileManager()
+
+	def __str__(self):
+		return self.user.username
+
+# def create_profile(sender,instance,**kwargs):
+# 	profile,new = Profile.objects.get_or_create(user=instance)
+ 
+# post_save.connect(create_profile,sender=User)

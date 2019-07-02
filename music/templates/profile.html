@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-4">
+		{% if user.profile.image %}
+			<a href="{{ user.profile.image.url }}"><img src="{{ user.profile.image.url }}"  width="250px" height="250px" class="rounded-circle"></a>
+		{% else %}
+			<img src="{% static 'img/profile_logo2.jpg' %}" width="250px" height="250px">
+		{% endif %}
+		
+		</div>
+		<div class="col-md-4">
+		<h3>Welcome: {{ user.username }}</h3>
+		<h3>City: {{ user.profile.city }}</h3>
+		<p>Address: {{ user.profile.address }}</p>
+		<p>Last Seen on: {{ user.profile.last_seen }}</p>
+		
+		<div class="profile"><a href='{% url "myprofile" %}'><p>Edit Profile</p></a></div>
+		<div class="products"><a href="{% url 'index' %}"><p>Home</p></a></div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

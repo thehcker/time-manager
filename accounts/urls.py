@@ -2,6 +2,8 @@ from django.urls import path, include
 from accounts import views as accounts_views
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
+from accounts import views as profiles_views
+
 
 urlpatterns = [
     path('reset/',
@@ -28,5 +30,8 @@ urlpatterns = [
     path('signup/',accounts_views.signup,name='signup'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/',auth_views.LogoutView.as_view(),name='logout'),
+    path('profile/',profiles_views.userProfile,name='profile'),
+    path('myprofile/',profiles_views.model_profile_upload,name='myprofile'),
+
 
     ]

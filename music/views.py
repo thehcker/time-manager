@@ -17,8 +17,10 @@ from django.views.generic.edit import CreateView,UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from music.forms import SongForm
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
 
 
 AUDIO_FILE_TYPES = ['wav', 'mp3', 'ogg']
@@ -148,6 +150,11 @@ def create_song(request, album_id):
                 return render(request, 'create_song.html', context)
         song = form.save(commit=False)
         song.album = album
+        song.save()
+        context = {
+            'album': album,
+            'form': form,
+        }
         # song.audio_file = request.POST['audio_file']
         # file_type = song.audio_file.split('.')[-1]
         # file_type = file_type.lower()
@@ -161,10 +168,14 @@ def create_song(request, album_id):
 
         # song.save()
         # return render(request, 'detail.html', {'album': album})
+        
+        return render(request, 'detail.html', context)
     context = {
-        'album': album,
-        'form': form,
-    }
+            'album': album,
+            'form': form,
+        }
+
+
     return render(request, 'create_song.html', context)
 
 # class SongDelete(DeleteView):
@@ -176,4 +187,6 @@ def delete_song(request, album_id, song_id):
     song = Song.objects.get(pk=song_id)
     song.delete()
     return render(request, 'detail.html', {'album': album})
+
+
 
