@@ -24,7 +24,7 @@ urlpatterns = [
     path('', include('music.urls')),
     path('accounts/', include('accounts.urls')),
     path('user_manager/', include(('userManager.urls', 'user_manager'), namespace='user_manager')),
-    path('admin/', include(('Admin.urls', 'admin'), namespace='admin')),
+    path('myadmin/', include(('Admin.urls', 'myadmin'), namespace='myadmin')),
 
    ]
 
