@@ -118,6 +118,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Customize user model
+
 AUTH_USER_MODEL = 'accounts.User'
 
 # Static files (CSS, JavaScript, Images)
