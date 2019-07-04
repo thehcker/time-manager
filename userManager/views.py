@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login, authenticate
 from accounts.forms import SignUpForm
 # Create your views here.
-def signup(request):
+def manager_signup(request):
 	if request.method == 'POST':
 		form = SignUpForm(request.POST)
 		if form.is_valid():
@@ -15,4 +15,4 @@ def signup(request):
 			return redirect('index')
 	else:
 		form = SignUpForm()
-	return render(request,'manager_signup.html',{'form':form})
+	return render(request,'signup.html',{'form':form})
