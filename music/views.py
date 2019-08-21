@@ -105,6 +105,47 @@ class SongUpdate(UpdateView):
     template_name = 'create_song.html'
     success_url = reverse_lazy('detail')
 
+def update_song(request, pk):
+    song = get_object_or_404(Song, pk=pk)
+    if request.method == 'POST':
+        form = SongForm(request.POST, request.FILES, instance=song)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = SongForm(instance=song)
+    return render(request, 'update_song.html', {
+        'form': form
+    })
+
+    # form = SongForm(request.POST or None, request.FILES or None)
+    # album = get_object_or_404(Album, pk=album_id)
+    # if form.is_valid():
+    #     albums_songs = album.song_set.all()
+    #     for s in albums_songs:
+    #         if s.song_title == form.cleaned_data.get("song_title"):
+    #             context = {
+    #                 'album': album,
+    #                 'form': form,
+    #                 'error_message': 'You already added that song',
+    #             }
+    #             return render(request, 'create_song.html', context)
+    #     song = form.save(commit=False)
+    #     song.album = album
+    #     song.save()
+    #     context = {
+    #         'album': album,
+    #         'form': form,
+    #     }        
+    #     return render(request, 'detail.html', context)
+    # context = {
+    #         'album': album,
+    #         'form': form,
+    #     }
+
+
+    # return render(request, 'create_song.html', context)
+
 def songs(request, filter_by):
     if not request.user.is_authenticated:
         return render(request, 'index.html')

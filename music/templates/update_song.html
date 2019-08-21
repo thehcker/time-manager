@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Add a New Song{% endblock %}
+{% block albums_active %}active{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Update Song</h3>
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+                    <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="album" value="{{ album }}">
+                        {% include 'form_template.html' %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -26,6 +26,25 @@ def upload_image_path(instance, filename):
             )
 
 # Create your models here.
+
+class AlbumManager(models.Manager):
+	def new_or_get(self,request):
+		album_id = request.session.get("album_id",None)
+		qs = self.get_queryset().filter(id=album_id)
+		if qs.count() == 1:
+			new_obj = False
+			album_obj = qs.first()
+			if request.user.is_authenticated and album_obj.user is None:
+				album_obj.user = request.user
+				album_obj.save()
+		else:
+			album_obj = Cart.objects.new(user=request.user)
+			new_obj = True
+			request.session['album_id'] = album_obj.id
+		return album_obj, new_obj
+
+
+
 class Album(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True)
 	artist = models.CharField(max_length=100)
@@ -35,11 +54,19 @@ class Album(models.Model):
 	is_favorite = models.BooleanField(default=False)
 	timestamp = models.DateTimeField(auto_now_add=True)
 
+	objects = AlbumManager()
+
 	def get_absolute_url(self):
 		return reverse('music:detail', kwargs={'pk':self.pk})
 
 	def __str__(self):
 		return self.album_title + '-' + self.artist
+
+def pre_save_album_receiver(sender,instance,*args,**kwargs):
+	album,new = Album.objects.get_or_create(user=instance)
+
+pre_save.connect(pre_save_album_receiver, sender=User)
+
 
 
 class Song(models.Model):
@@ -55,10 +82,11 @@ class Song(models.Model):
 	def __str__(self):
 		return self.song_title
 
-# def pre_save_album_receiver(sender,instance,*args,**kwargs):
-# 	album,new = Album.objects.get_or_create(user=instance)
+def create_song(sender,instance,**kwargs):
+	song,new = Song.objects.get_or_create(user=instance)
+ 
+pre_save.connect(create_song,sender=Album)
 
-# pre_save.connect(pre_save_album_receiver, sender=User)
 
 
 class ProfileManager(models.Manager):
@@ -92,7 +120,7 @@ class Profile(models.Model):
 	def __str__(self):
 		return self.user.username
 
-# def create_profile(sender,instance,**kwargs):
-# 	profile,new = Profile.objects.get_or_create(user=instance)
+def create_album(sender,instance,**kwargs):
+	album,new = Album.objects.get_or_create(user=instance)
  
-# post_save.connect(create_profile,sender=User)
+post_save.connect(create_album,sender=User)
