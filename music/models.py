@@ -83,7 +83,7 @@ class Song(models.Model):
 		return self.song_title
 
 def create_song(sender,instance,**kwargs):
-	song,new = Song.objects.get_or_create(user=instance)
+	song,new = Song.objects.get_or_create(album=instance)
  
 pre_save.connect(create_song,sender=Album)
 
