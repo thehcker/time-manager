@@ -14,9 +14,8 @@
                     <div class="thumbnail" >
                         <a href="{% url 'detail' album.id %}">
                             {% if album.album_logo %}
-                            <img src="{{ album.album_logo.url }}" class="img-responsive" style="width: 300px;">
+                            <img src="{{ album.album_logo.url }}" class="img-responsive" style="width: 300px; height: 250px;">
                             {% else %}
-                            None
                             {% endif %}
                         </a>
                         <div class="caption">

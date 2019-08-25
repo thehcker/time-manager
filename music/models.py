@@ -62,12 +62,28 @@ class Album(models.Model):
 	def __str__(self):
 		return self.album_title + '-' + self.artist
 
-def pre_save_album_receiver(sender,instance,*args,**kwargs):
-	album,new = Album.objects.get_or_create(user=instance)
+# def pre_save_album_receiver(sender,instance,*args,**kwargs):
+# 	album,new = Album.objects.get_or_create(user=instance)
 
-pre_save.connect(pre_save_album_receiver, sender=User)
+# pre_save.connect(pre_save_album_receiver, sender=User)
 
 
+
+class SongManager(models.Manager):
+	def new_or_get(self,request):
+		song_id = request.session.get("song_id",None)
+		qs = self.get_queryset().filter(id=song_id)
+		if qs.count() == 1:
+			new_obj = False
+			song_obj = qs.first()
+			if request.user.is_authenticated and song_obj.user is None:
+				song_obj.user = request.user
+				song_obj.save()
+		else:
+			song_obj = Cart.objects.new(user=request.user)
+			new_obj = True
+			request.session['song_id'] = song_obj.id
+		return song_obj, new_obj
 
 class Song(models.Model):
 	album = models.ForeignKey(Album, on_delete=models.CASCADE)
@@ -76,16 +92,18 @@ class Song(models.Model):
 	is_favorite = models.BooleanField(default=False)
 	timestamp = models.DateTimeField(auto_now_add=True)
 
+	objects = SongManager()
+
 	def get_absolute_url(self):
 		return reverse('music:create_song', kwargs={'pk':self.pk})
 
 	def __str__(self):
 		return self.song_title
 
-def create_song(sender,instance,**kwargs):
-	song,new = Song.objects.get_or_create(album=instance)
+# def create_song(sender,instance,**kwargs):
+# 	song,new = Song.objects.get_or_create(album=instance)
  
-pre_save.connect(create_song,sender=Album)
+# post_save.connect(create_song,sender=Album)
 
 
 

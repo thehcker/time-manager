@@ -1,12 +1,12 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from . models import User
-from music.models import Profile
+from accounts.models import User
 from django.db import transaction
+# from music.models import Profile
 
 # User = get_user_model()
 
-class SignUpForm(UserCreationForm):
+class ManagerSignUpForm(UserCreationForm):
 	first_name = forms.CharField(max_length=30,required=False,help_text='Optional.')
 	last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
 	email = forms.EmailField(max_length=254,help_text='Required. Inform a valid email address.')
@@ -16,16 +16,17 @@ class SignUpForm(UserCreationForm):
 		fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
 
 	@transaction.atomic
-	def save(self):
+	def save(self, commit=True):
 		user = super().save(commit=False)
-		user.is_user = True
-		user.save()
+		user.is_super_user = True
+		if commit:
+			user.save()
 
 		return user
 
 
 
-class ProfileForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ('name','address','city','description', 'image' )
+# class ProfileForm(forms.ModelForm):
+#     class Meta:
+#         model = Profile
+#         fields = ('name','address','city','description', 'image' )

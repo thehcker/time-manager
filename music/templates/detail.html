@@ -29,7 +29,9 @@
 
             <ul class="nav nav-pills" style="margin-bottom: 10px;">
                 <li role="presentation" class="active"><a href="{% url 'detail' album.id %}">View All</a></li>
+                {% if user.is_authenticated and user.is_user %}
                 <li role="presentation"><a href="{% url 'create_song' album.id %}">Add New Song</a></li>
+                {% endif %}
             </ul>
 
             <div class="panel panel-default">
@@ -64,6 +66,7 @@
                                 <td>
                                     <a href="{% url 'favorite' song.id %}" class="btn-favorite"><span class="glyphicon glyphicon-star {% if song.is_favorite %}active{% endif %}"></span></a>
                                 </td>
+                                {% if user.is_authenticated and user.is_user %}
                                 <td>
                                     <form action="{% url 'update_song' song.id %}" method="post" style="display: inline;">
                                         {% csrf_token %}
@@ -82,6 +85,7 @@
                                         </button>
                                     </form>
                                 </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                         </tbody>

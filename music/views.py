@@ -20,6 +20,7 @@ from music.forms import SongForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from decorators import user_required
 
 
 
@@ -105,6 +106,9 @@ class SongUpdate(UpdateView):
     template_name = 'create_song.html'
     success_url = reverse_lazy('detail')
 
+
+@login_required
+@user_required
 def update_song(request, pk):
     song = get_object_or_404(Song, pk=pk)
     if request.method == 'POST':
@@ -176,6 +180,8 @@ class AlbumDelete(DeleteView):
 # 	template_name = 'create_song.html'
 # 	success_url = reverse_lazy('detail')
 
+@login_required
+@user_required
 def create_song(request, album_id):
     form = SongForm(request.POST or None, request.FILES or None)
     album = get_object_or_404(Album, pk=album_id)
@@ -222,7 +228,8 @@ def create_song(request, album_id):
 # class SongDelete(DeleteView):
 # 	model = Song
 # 	success_url = reverse_lazy('detail')
-
+@login_required
+@user_required
 def delete_song(request, album_id, song_id):
     album = get_object_or_404(Album, pk=album_id)
     song = Song.objects.get(pk=song_id)
