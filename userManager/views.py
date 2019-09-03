@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import login, authenticate
 from .forms import ManagerSignUpForm
+from accounts.models import User
 # Create your views here.
 
 def manager_signup(request):
@@ -16,3 +17,9 @@ def manager_signup(request):
 	else:
 		form = ManagerSignUpForm()
 	return render(request,'manager_signup.html',{'form':form})
+
+
+def manage_users(request):
+	all_users = User.objects.all()
+	template = 'includes/all_users.html'
+	return render(request, template, {'all_users': all_users})

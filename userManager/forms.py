@@ -26,7 +26,7 @@ class ManagerSignUpForm(UserCreationForm):
 
 
 
-# class ProfileForm(forms.ModelForm):
-#     class Meta:
-#         model = Profile
-#         fields = ('name','address','city','description', 'image' )
+class UserManagerForm(forms.ModelForm):
+	class Meta:
+		model = User
+		fields = '__all__'

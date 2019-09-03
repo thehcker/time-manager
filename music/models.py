@@ -92,7 +92,7 @@ class Song(models.Model):
 	is_favorite = models.BooleanField(default=False)
 	timestamp = models.DateTimeField(auto_now_add=True)
 
-	objects = SongManager()
+	# objects = SongManager()
 
 	def get_absolute_url(self):
 		return reverse('music:create_song', kwargs={'pk':self.pk})
