@@ -68,7 +68,7 @@
                                 </td>
                                 {% if user.is_authenticated and user.is_user %}
                                 <td>
-                                    <form action="{% url 'update_song' song.id %}" method="post" style="display: inline;">
+                                    <form action="{% url 'update_song' song.id %}" method="get" style="display: inline;">
                                         {% csrf_token %}
                                         <input type="hidden" name="song_id" value="{{ song.id }}" />
                                         <button type="submit" class="btn btn-primary btn-xs">
