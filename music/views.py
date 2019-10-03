@@ -115,7 +115,7 @@ def update_song(request, pk):
         form = SongForm(request.POST, request.FILES, instance=song)
         if form.is_valid():
             form.save()
-            return redirect('profile')
+            return redirect('index')
     else:
         form = SongForm(instance=song)
     return render(request, 'update_song.html', {
