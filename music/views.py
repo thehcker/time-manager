@@ -170,6 +170,12 @@ def songs(request, filter_by):
         })
 	
 
+def all_songs(request):
+    all_songs = Song.objects.all()
+    context = {'all_songs': all_songs}
+    template = 'all_songs.html'
+    return render(request,template, context)
+
 class AlbumDelete(DeleteView):
 	model = Album
 	success_url = reverse_lazy('index')
