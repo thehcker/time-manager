@@ -54,7 +54,7 @@ class Album(models.Model):
 	is_favorite = models.BooleanField(default=False)
 	timestamp = models.DateTimeField(auto_now_add=True)
 
-	objects = AlbumManager()
+	# objects = AlbumManager()
 
 	def get_absolute_url(self):
 		return reverse('music:detail', kwargs={'pk':self.pk})
@@ -62,11 +62,10 @@ class Album(models.Model):
 	def __str__(self):
 		return self.album_title + '-' + self.artist
 
-# def pre_save_album_receiver(sender,instance,*args,**kwargs):
-# 	album,new = Album.objects.get_or_create(user=instance)
-
-# pre_save.connect(pre_save_album_receiver, sender=User)
-
+def create_album(sender, **kwargs):
+	if kwargs['created']:
+		user_album = Album.objects.create(user=kwargs['instance'])
+post_save.connect(create_album, sender=User)
 
 
 class SongManager(models.Manager):
@@ -137,8 +136,3 @@ class Profile(models.Model):
 
 	def __str__(self):
 		return self.user.username
-
-def create_album(sender,instance,**kwargs):
-	album,new = Album.objects.get_or_create(user=instance)
- 
-post_save.connect(create_album,sender=User)

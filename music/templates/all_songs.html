@@ -36,11 +36,9 @@
                                     <td>{{ song.song_title }}</td>
                                     <td>{{ song.album.artist }}</td>
                                     <td>
-                                        <a target="_blank" href="{{ song.audio_file }}">
-                                            <button type="button" class="btn btn-success btn-xs">
-                                                <span class="glyphicon glyphicon-play"></span>&nbsp; Play
-                                            </button>
-                                        </a>
+                                        <video controls loop autoplay>
+                                            <source src="{{ song.audio_file }}" type="video/mp4">
+                                        </video>
                                     </td>
                                     <td>
                                         <a href="{% url 'detail' song.album.id %}">
