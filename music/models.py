@@ -46,7 +46,7 @@ class AlbumManager(models.Manager):
 
 
 class Album(models.Model):
-	user = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True)
+	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	artist = models.CharField(max_length=100)
 	album_title = models.CharField(max_length=100)
 	genre = models.CharField(max_length=50)
@@ -62,10 +62,11 @@ class Album(models.Model):
 	def __str__(self):
 		return self.album_title + '-' + self.artist
 
-def create_album(sender, **kwargs):
-	if kwargs['created']:
-		user_album = Album.objects.create(user=kwargs['instance'])
-post_save.connect(create_album, sender=User)
+# def create_album(sender,instance, created, **kwargs):
+# 	if created:
+# 		album_obj = Album.objects.create(user=instance)
+# 		album_obj.save()
+# post_save.connect(create_album, sender=User)
 
 
 class SongManager(models.Manager):

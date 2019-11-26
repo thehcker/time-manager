@@ -9,3 +9,10 @@ body{
 	font-family: 'Satisfy',cursive;
 }
 /*Montserrat*/
+.img-responsive{
+	height: 250px;
+	width: 300px;
+}
+.thumbnail{
+	height: 470px;
+}

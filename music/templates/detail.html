@@ -20,6 +20,18 @@
                     <h1>{{ album.album_title }} <small>{{ album.genre }}</small></h1>
                     <h2>{{ album.artist }}</h2>
                     <span>Added on : {{ album.timestamp }} {{ album.timestamp | timesince }} ago</span>
+                    {% if album.user == user %}
+                            <a href="{% url 'update-album' album.id %}" class="btn btn-primary btn-sm" role="button">Update ALbum</a>
+                            
+                            <!-- Delete Album -->
+                            <form action="{% url 'delete-album' album.id %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="album_id" value="{{ album.id }}" />
+                                <button type="submit" class="btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </form>
+                            {% endif %}
                 </div>
             </div>
         </div>
@@ -29,8 +41,10 @@
 
             <ul class="nav nav-pills" style="margin-bottom: 10px;">
                 <li role="presentation" class="active"><a href="{% url 'detail' album.id %}">View All</a></li>
-                {% if user.is_authenticated and user.is_user %}
-                <li role="presentation"><a href="{% url 'create_song' album.id %}">Add New Song</a></li>
+                {% if album.user == user %}
+                    {% if user.is_authenticated and user.is_user %}
+                    <li role="presentation"><a href="{% url 'create_song' album.id %}">Add New Song</a></li>
+                    {% endif %}
                 {% endif %}
             </ul>
 

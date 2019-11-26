@@ -15,7 +15,7 @@ from django.views.generic import ListView, DetailView
 from music.models import Album,Song
 from django.views.generic.edit import CreateView,UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from music.forms import SongForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
@@ -67,21 +67,49 @@ class IndexView(LoginRequiredMixin, ListView):
 	def get_queryset(self):
 		return Album.objects.all()
 
+class AlbumCreate(LoginRequiredMixin, CreateView):
+    model = Album
+    fields = ['artist', 'album_title', 'genre','album_logo']
+    template_name = 'album_form.html'
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class AlbumUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Album
+    fields = ['artist', 'album_title', 'genre','album_logo']
+    template_name = 'album_form.html'
+    success_url = reverse_lazy('index')
+
+    def test_func(self):
+        album = self.get_object()
+        if self.request.user == album.user:
+            return True
+        return False
+
 class DetailView(DetailView):
 	model = Album
 	template_name = 'detail.html'
 
-class AlbumCreate(CreateView):
-	model = Album
-	fields = ['artist', 'album_title', 'genre','album_logo']
-	template_name = 'album_form.html'
-	success_url = reverse_lazy('index')
+class AlbumDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Album
+    success_url = reverse_lazy('index')
 
-class AlbumUpdate(UpdateView):
-	model = Album
-	fields = ['artist', 'album_title', 'genre','album_logo']
-	template_name = 'album_form.html'
-	success_url = reverse_lazy('index')
+    def test_func(self):
+        album = self.get_object()
+        if self.request.user == album.user:
+            return True
+        return True
+
+
+
+
+
+
+
+
 
 # def album_update(request):
 #     album_id = request.POST.get('album_id')
@@ -150,6 +178,22 @@ def update_song(request, pk):
 
     # return render(request, 'create_song.html', context)
 
+
+class CreateSongView(LoginRequiredMixin, UpdateView):
+    model = Song
+    fields = '__all__'
+    template_name = 'create_song.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    # def test_func(self):
+    #     song = self.get_object()
+    #     if self.request.user == song.user:
+    #         return True
+    #     return True
+
 def songs(request, filter_by):
     if not request.user.is_authenticated:
         return render(request, 'index.html')
@@ -176,9 +220,6 @@ def all_songs(request):
     template = 'all_songs.html'
     return render(request,template, context)
 
-class AlbumDelete(DeleteView):
-	model = Album
-	success_url = reverse_lazy('index')
 
 # class SongCreate(CreateView):
 # 	model = Song
@@ -202,7 +243,7 @@ def create_song(request, album_id):
                 }
                 return render(request, 'create_song.html', context)
         song = form.save(commit=False)
-        song.album = album
+        song.instance.album = request.album
         song.save()
         context = {
             'album': album,
