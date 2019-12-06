@@ -20,7 +20,7 @@ from music.forms import SongForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from decorators import user_required
+from decorators import user_required,user_manager_required, superuser_required
 
 
 
@@ -41,9 +41,9 @@ def favorite(request, song_id):
             song.is_favorite = True
         song.save()
     except (KeyError, Song.DoesNotExist):
-        return JsonResponse({'success': False})
+        return redirect('favorite') #JsonResponse({'success': False})
     else:
-        return JsonResponse({'success': True})
+        return redirect('favorite') #JsonResponse({'success': True})
 
 def favorite_album(request, album_id):
     album = get_object_or_404(Album, pk=album_id)
@@ -67,6 +67,11 @@ class IndexView(LoginRequiredMixin, ListView):
 	def get_queryset(self):
 		return Album.objects.all()
 
+class AlbumDetailView(DetailView):
+    model = Album
+    template_name = 'detail.html'
+
+
 class AlbumCreate(LoginRequiredMixin, CreateView):
     model = Album
     fields = ['artist', 'album_title', 'genre','album_logo']
@@ -89,9 +94,6 @@ class AlbumUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
-class DetailView(DetailView):
-	model = Album
-	template_name = 'detail.html'
 
 class AlbumDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Album
@@ -136,9 +138,9 @@ class SongUpdate(UpdateView):
 
 
 @login_required
-@user_required
 def update_song(request, pk):
     song = get_object_or_404(Song, pk=pk)
+    # album = get_object_or_404(Album, pk=pk)
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES, instance=song)
         if form.is_valid():
@@ -179,20 +181,30 @@ def update_song(request, pk):
     # return render(request, 'create_song.html', context)
 
 
-class CreateSongView(LoginRequiredMixin, UpdateView):
+class CreateSongView(LoginRequiredMixin,UserPassesTestMixin, CreateView):
     model = Song
-    fields = '__all__'
+    fields = ['song_title', 'audio_file', 'is_favorite']
+    success_url = reverse_lazy('index')
     template_name = 'create_song.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CreateSongView, self).get_context_data(*args, **kwargs)
+        album_obj, new_obj = Song.objects.new_or_get(self.request)
+        context['album'] = album_obj
+        return context
+
+    def get_queryset(self):
+        return Album.objects.all()
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    # def test_func(self):
-    #     song = self.get_object()
-    #     if self.request.user == song.user:
-    #         return True
-    #     return True
+    def test_func(self):
+        song = self.get_object()
+        if self.request.user == song.user:
+            return True
+        return True
 
 def songs(request, filter_by):
     if not request.user.is_authenticated:
@@ -221,14 +233,7 @@ def all_songs(request):
     return render(request,template, context)
 
 
-# class SongCreate(CreateView):
-# 	model = Song
-# 	fields = ['song_title', 'file_type', 'is_favorite']
-# 	template_name = 'create_song.html'
-# 	success_url = reverse_lazy('detail')
-
 @login_required
-@user_required
 def create_song(request, album_id):
     form = SongForm(request.POST or None, request.FILES or None)
     album = get_object_or_404(Album, pk=album_id)
@@ -243,7 +248,7 @@ def create_song(request, album_id):
                 }
                 return render(request, 'create_song.html', context)
         song = form.save(commit=False)
-        song.instance.album = request.album
+        song.album = album
         song.save()
         context = {
             'album': album,
@@ -275,8 +280,8 @@ def create_song(request, album_id):
 # class SongDelete(DeleteView):
 # 	model = Song
 # 	success_url = reverse_lazy('detail')
+
 @login_required
-@user_required
 def delete_song(request, album_id, song_id):
     album = get_object_or_404(Album, pk=album_id)
     song = Song.objects.get(pk=song_id)

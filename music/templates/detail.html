@@ -42,7 +42,7 @@
             <ul class="nav nav-pills" style="margin-bottom: 10px;">
                 <li role="presentation" class="active"><a href="{% url 'detail' album.id %}">View All</a></li>
                 {% if album.user == user %}
-                    {% if user.is_authenticated and user.is_user %}
+                    {% if user.is_authenticated and user == request.user %}
                     <li role="presentation"><a href="{% url 'create_song' album.id %}">Add New Song</a></li>
                     {% endif %}
                 {% endif %}
@@ -72,15 +72,13 @@
                                 <td>{{ song.song_title }}</td>
                                 <td>
                                     <a target="_blank" href="{{ song.audio_file }}">
-                                        <button type="button" class="btn btn-success btn-xs">
-                                            <span class="glyphicon glyphicon-play"></span>&nbsp; Play
-                                        </button>
+                                        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ song.audio_file }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="{% url 'favorite' song.id %}" class="btn-favorite"><span class="glyphicon glyphicon-star {% if song.is_favorite %}active{% endif %}"></span></a>
+                                    <a href="#" class="btn-favorite"><span class="glyphicon glyphicon-star {% if song.is_favorite %}active{% endif %}"></span></a>
                                 </td>
-                                {% if user.is_authenticated and user.is_user %}
+                                {% if user.is_authenticated and album.user == user %}
                                 <td>
                                     <form action="{% url 'update_song' song.id %}" method="get" style="display: inline;">
                                         {% csrf_token %}

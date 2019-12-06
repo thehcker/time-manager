@@ -36,18 +36,16 @@
                                     <td>{{ song.song_title }}</td>
                                     <td>{{ song.album.artist }}</td>
                                     <td>
-                                        <video controls loop autoplay>
-                                            <source src="{{ song.audio_file }}" type="video/mp4">
-                                        </video>
+                                        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ song.audio_file }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                     </td>
                                     <td>
                                         <a href="{% url 'detail' song.album.id %}">
-                                            <img src="{{ song.album.album_logo.url }}" class="img-responsive" style="width: 20px; float: left; margin-right: 10px;" />
+                                            <img style="width:150px; height: 150px;" src="{{ song.album.album_logo.url }}" class="img-responsive" style="width: 20px; float: left; margin-right: 10px;" />
                                         </a>
                                         <a href="{% url 'detail' song.album.id %}">{{ song.album.album_title }}</a>
                                     </td>
                                     <td>
-                                        <a href="{% url 'favorite' song.id %}" class="btn-favorite"><span class="glyphicon glyphicon-star {% if song.is_favorite %}active{% endif %}"></span></a>
+                                        <a href="#" class="btn-favorite"><span class="glyphicon glyphicon-star {% if song.is_favorite %}active{% endif %}"></span></a>
                                     </td>
                                 </tr>
                             {% endfor %}

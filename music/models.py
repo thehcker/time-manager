@@ -5,6 +5,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.db.models.signals import pre_save, post_save
+from PIL import Image
 
 
 User = settings.AUTH_USER_MODEL
@@ -38,15 +39,22 @@ class AlbumManager(models.Manager):
 				album_obj.user = request.user
 				album_obj.save()
 		else:
-			album_obj = Cart.objects.new(user=request.user)
+			album_obj = Album.objects.new(user=request.user)
 			new_obj = True
 			request.session['album_id'] = album_obj.id
 		return album_obj, new_obj
 
+	def new(self, user=None):
+		user_obj = None
+		if user is not None:
+			if user.is_authenticated:
+				user_obj = user
+		return self.model.objects.create(user=user_obj)
+
 
 
 class Album(models.Model):
-	user = models.ForeignKey(User,on_delete=models.CASCADE)
+	user = models.ForeignKey(User,on_delete=models.CASCADE, null=True, blank=True)
 	artist = models.CharField(max_length=100)
 	album_title = models.CharField(max_length=100)
 	genre = models.CharField(max_length=50)
@@ -54,13 +62,21 @@ class Album(models.Model):
 	is_favorite = models.BooleanField(default=False)
 	timestamp = models.DateTimeField(auto_now_add=True)
 
-	# objects = AlbumManager()
+	objects = AlbumManager()
 
 	def get_absolute_url(self):
-		return reverse('music:detail', kwargs={'pk':self.pk})
+		return reverse('detail', kwargs={'pk':self.pk})
 
 	def __str__(self):
 		return self.album_title + '-' + self.artist
+
+	def save(self):
+		super().save()
+		img = Image.open(self.album_logo.path)
+		if img.height > 200 or img.width > 200:
+			output_size = (200,200)
+			img.thumbnail(output_size)
+			img.save(self.album_logo.path)
 
 # def create_album(sender,instance, created, **kwargs):
 # 	if created:
@@ -76,26 +92,31 @@ class SongManager(models.Manager):
 		if qs.count() == 1:
 			new_obj = False
 			song_obj = qs.first()
-			if request.user.is_authenticated and song_obj.user is None:
-				song_obj.user = request.user
-				song_obj.save()
+			song_obj.save()
 		else:
-			song_obj = Cart.objects.new(user=request.user)
+			song_obj = Song.objects.create(self.album)
 			new_obj = True
 			request.session['song_id'] = song_obj.id
 		return song_obj, new_obj
 
+	def new(self, user=None):
+		user_obj = None
+		if user is not None:
+			if user.is_authenticated:
+				user_obj = user
+		return self.model.objects.create(user=user_obj)
+
 class Song(models.Model):
-	album = models.ForeignKey(Album, on_delete=models.CASCADE)
+	album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True, blank=True)
 	audio_file = models.CharField(max_length=100)
 	song_title = models.CharField(max_length=100)
 	is_favorite = models.BooleanField(default=False)
 	timestamp = models.DateTimeField(auto_now_add=True)
 
-	# objects = SongManager()
+	objects = SongManager()
 
-	def get_absolute_url(self):
-		return reverse('music:create_song', kwargs={'pk':self.pk})
+	# def get_absolute_url(self):
+	# 	return reverse('detail', kwargs={'pk':self.pk})
 
 	def __str__(self):
 		return self.song_title
