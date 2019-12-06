@@ -47,7 +47,9 @@
 			<li class="nav-item {% if request.path == profile %} active {% endif %}">
             <a class="nav-link" href="{% url 'profile' %}">Profile</a>
           </li>
-			
+			<!-- <li class="nav-item">
+            <a class="nav-link" href="{% url 'user_manager:manage_users' %}">Users</a>
+          </li> -->
 		</ul>
 		<form class="navbar-form navbar-left" role="search" method="get" action="#">
 			<div class="form-group">
@@ -70,11 +72,11 @@
 		</ul>
 		{% else %}
 		<ul class="nav navbar-nav navbar-right">
-			<li class="">
+			<!-- <li class="">
 				<a href="{% url 'user_manager:manager_signup' %}">
 					<span class="glyphicon glyphicon-on" arial-hidden="true"></span>&nbsp; Sign Up as User Manager
 				</a>
-			</li>
+			</li> -->
 			
 			</li>
 			<li class="">
