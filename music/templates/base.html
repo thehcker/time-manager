@@ -30,7 +30,7 @@
 			<a class="navbar-brand" href="{% url 'index' %}">Music App</a>
 			
 		</div>
-		{% if request.user.is_authenticated %}
+		
 		<!-- Items -->
 		<div class="collapse navbar-collapse" id="topNavBar">
 		<ul class="nav navbar-nav">
@@ -44,6 +44,7 @@
 					<span class="glyphicon glyphicon-music" arial-hidden="true"></span>&nbsp; Songs
 				</a>
 			</li>
+			{% if request.user.is_authenticated %}
 			<li class="nav-item {% if request.path == profile %} active {% endif %}">
             <a class="nav-link" href="{% url 'profile' %}">Profile</a>
           </li>

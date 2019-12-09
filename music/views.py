@@ -59,7 +59,7 @@ def favorite_album(request, album_id):
         return JsonResponse({'success': True})
 
 
-class IndexView(LoginRequiredMixin, ListView):
+class IndexView(ListView):
 	login_url = '/accounts/login/'
 	template_name = 'index.html'
 	context_object_name = 'all_albums'
