@@ -52,18 +52,13 @@
 			<!-- <li class="nav-item">
             <a class="nav-link" href="{% url 'user_manager:manage_users' %}">Users</a>
           </li> -->
-		
-
+			<div class="col-md-3 my-2">
+          	{% include 'search_form.html' %}
+          </div>
 		<ul class="nav navbar-nav navbar-right">
-			<li class="">
-			<form class="navbar-form navbar-left" role="search" method="get" action="#">
-				<div class="form-group">
-				<input type="text" class="form-control" name="q" value="">
-				</div>
-				<button type="submit" class="btn btn-default">Search</button>
-
-			</form>
-		</li>
+			
+			
+		
 			<li class="">
 				<a href="{% url 'album-add' %}">
 					<span class="glyphicon glyphicon-plus" arial-hidden="true"></span>&nbsp; Add Album

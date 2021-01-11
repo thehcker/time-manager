@@ -5,13 +5,13 @@
 <div class="albums-container container-fluid">
 <!-- Albums -->
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-12" style="text-align: center;">
             <h3>Albums</h3>
         </div>
 
 		{% for album in all_albums %}
-				<div class="col-sm-4 col-lg-4">
-                    <div class="thumbnail" >
+				<div class="col-sm-12 col-md-4">
+                    <div class="thumbnail" style="text-align: center;">
                         <a href="{% url 'detail' album.id %}">
                             {% if album.album_logo %}
                             <img src="{{ album.album_logo.url }}" class="img-responsive">

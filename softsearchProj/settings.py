@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Admin',
     'userManager',
     'widget_tweaks',
+    'search',
 ]
 
 MIDDLEWARE = [

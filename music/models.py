@@ -3,6 +3,7 @@ import os
 from django.conf import settings
 # from accounts.models import User
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.db.models.signals import pre_save, post_save
 from PIL import Image
@@ -83,6 +84,10 @@ class Album(models.Model):
 
 
 class SongManager(models.Manager):
+	def search(self, query):
+		lookups = Q(song_title__icontains=query)
+		return self.filter(lookups).distinct()
+
 	def new_or_get(self,request):
 		song_id = request.session.get("song_id",None)
 		qs = self.get_queryset().filter(id=song_id)

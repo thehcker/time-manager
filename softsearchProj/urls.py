@@ -25,6 +25,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('user_manager/', include(('userManager.urls', 'user_manager'), namespace='user_manager')),
     path('myadmin/', include(('Admin.urls', 'myadmin'), namespace='myadmin')),
+    path('search/', include(('search.urls', 'search'), namespace='search')),
 
    ]
 

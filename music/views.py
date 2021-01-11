@@ -54,9 +54,9 @@ def favorite_album(request, album_id):
             album.is_favorite = True
         album.save()
     except (KeyError, Album.DoesNotExist):
-        return JsonResponse({'success': False})
+        return redirect('favorite_album') #JsonResponse({'success': False})
     else:
-        return JsonResponse({'success': True})
+        return redirect('favorite_album') #JsonResponse({'success': True})
 
 
 class IndexView(ListView):
