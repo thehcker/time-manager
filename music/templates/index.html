@@ -27,8 +27,8 @@
                             <a href="{% url 'detail' album.id %}" class="btn btn-primary btn-sm" role="button">View Details</a>
                             <!-- Update Details -->
 
-                            <!-- Favorite Album -->
-                            <a href="{% url 'favorite_album' album.id %}" class="btn btn-default btn-sm btn-favorite" role="button">
+                            <!-- Favorite Album {% url 'favorite_album' album.id %}-->
+                            <a href="#" class="btn btn-default btn-sm btn-favorite" role="button">
                                 <span class="glyphicon glyphicon-star {% if album.is_favorite %}active{% endif %}"></span>
                             </a>
                             <span>Added on: {{ album.timestamp }} {{ album.timestamp | timesince }} ago</span>
